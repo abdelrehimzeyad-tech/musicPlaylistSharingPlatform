@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";   // ⬅️ NEW
 
 export default function Login() {
   const navigate = useNavigate();
+  const { signIn } = useAuth();                     // ⬅️ NEW
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);    // ⬅️ NEW
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -16,16 +19,27 @@ export default function Login() {
       return;
     }
 
-    // ---- FAKE LOGIN SYSTEM ----
-    // In a real app, you'd check Firebase or API.
-    const fakeUser = {
-      name: "Abdulmajeed",
-      email: email,
-    };
+    setLoading(true);
+    setError("");
 
-    localStorage.setItem("user", JSON.stringify(fakeUser));
+    try {
+      // ---- REAL LOGIN WITH SUPABASE ----
+      const { error: authError } = await signIn(email, password);
 
-    navigate("/home"); // redirect user
+      if (authError) {
+        setError(authError.message || "Login failed.");
+        setLoading(false);
+        return;
+      }
+
+      // success
+      navigate("/home"); // or "/" depending on your routes
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,9 +72,10 @@ export default function Login() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-60"
             >
-              Log In
+              {loading ? "Logging in..." : "Log In"}
             </button>
           </form>
 

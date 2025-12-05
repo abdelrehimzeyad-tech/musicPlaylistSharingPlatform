@@ -1,37 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import { fetchPublicPlaylists } from "../api/playlists";
 
 export default function Explore() {
-  const [activeFilter, setActiveFilter] = useState("Trending");
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const filters = ["Trending", "Pop", "Afrobeats", "R&B", "Hip-Hop", "Jazz"];
+  const filters = ["All", "Pop", "Afrobeats", "R&B", "Hip-Hop", "Jazz"];
 
-  const playlists = [
-    { id: 1, title: "Fresh Finds", creator: "Tami", category: "Trending" },
-    { id: 2, title: "Global Top 50", creator: "Pip", category: "Pop" },
-    { id: 3, title: "Workout Pump", creator: "Remi", category: "Trending" },
-    { id: 4, title: "Cake Focus", creator: "Ron", category: "Jazz" },
-    { id: 5, title: "Indie Mix", creator: "Zee", category: "Pop" },
-    { id: 6, title: "Party Starters", creator: "Remi", category: "Afrobeats" },
-    { id: 7, title: "Piano Moods", creator: "Kofi", category: "Jazz" },
-  ];
+  useEffect(() => {
+    (async () => {
+      try {
+        setError("");
+        setLoading(true);
+        const data = await fetchPublicPlaylists();
+        setPlaylists(data);
+      } catch (err) {
+        console.error(err);
+        setError("Could not load public playlists.");
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
-  const filteredPlaylists =
-    activeFilter === "All"
-      ? playlists
-      : playlists.filter((p) => p.category === activeFilter);
+  const filteredPlaylists = playlists.filter((p) => {
+    const matchesFilter =
+      activeFilter === "All" ||
+      (p.genre &&
+        p.genre.toLowerCase() === activeFilter.toLowerCase());
+
+    const matchesSearch =
+      !search ||
+      p.title.toLowerCase().includes(search.toLowerCase()) ||
+      (p.description &&
+        p.description.toLowerCase().includes(search.toLowerCase()));
+
+    return matchesFilter && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-[#0b0b0f] text-white flex">
 
       <main className="flex-1 p-8 ml-20 md:ml-56 transition-all duration-300">
-
         {/* Search Bar */}
         <div className="mb-10 mt-6">
           <input
             type="text"
-            placeholder="Search songs, artists, playlists..."
+            placeholder="Search playlists..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full md:w-1/2 bg-[#16121d] border border-gray-700 rounded-full px-5 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400"
           />
         </div>
@@ -55,6 +77,15 @@ export default function Explore() {
 
         {/* Playlist Grid */}
         <section>
+          {loading && <p>Loading playlists...</p>}
+          {error && <p className="text-red-400 mb-4">{error}</p>}
+
+          {!loading && !error && filteredPlaylists.length === 0 && (
+            <p className="text-gray-400">
+              No playlists found. Try a different filter or search term.
+            </p>
+          )}
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
             {filteredPlaylists.map((p) => (
               <Link
@@ -63,12 +94,25 @@ export default function Explore() {
                 className="bg-[#16121d] rounded-xl overflow-hidden hover:scale-105 transition-transform"
               >
                 <div className="w-full h-40 bg-[#0f0c17] flex items-center justify-center">
-                  <span className="text-4xl text-purple-400">▶</span>
+                  {p.cover_image_url ? (
+                    <img
+                      src={p.cover_image_url}
+                      alt={p.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-4xl text-purple-400">▶</span>
+                  )}
                 </div>
 
                 <div className="p-4">
                   <p className="font-semibold">{p.title}</p>
-                  <p className="text-gray-400 text-sm">by {p.creator}</p>
+                  {p.genre && (
+                    <p className="text-gray-400 text-xs mb-1">{p.genre}</p>
+                  )}
+                  <p className="text-gray-500 text-xs line-clamp-2">
+                    {p.description}
+                  </p>
                 </div>
               </Link>
             ))}
