@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
 import { useAuth } from "../context/AuthContext";
 import { uploadAvatar, updateUserProfile } from "../api/profile";
 import { compressImage } from "../utils/compressImage";
@@ -13,7 +12,6 @@ export default function Profile() {
   const [bio, setBio] = useState("");
   const [avatarPreview, setAvatarPreview] = useState(null);
 
-  // Modal state
   const [isEditing, setIsEditing] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -30,18 +28,16 @@ export default function Profile() {
     const file = e.target.files[0];
     if (!file) return;
     setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file)); // show preview in modal
+    setAvatarPreview(URL.createObjectURL(file));
   };
 
   const handleSave = async () => {
     setSaving(true);
-
     let avatarUrl = avatarPreview;
 
     if (avatarFile) {
-      // compress + upload
-      const smallImage = await compressImage(avatarFile, 380);
-      avatarUrl = await uploadAvatar(smallImage, user.id);
+      const smallImg = await compressImage(avatarFile, 380);
+      avatarUrl = await uploadAvatar(smallImg, user.id);
     }
 
     await updateUserProfile({
@@ -50,95 +46,157 @@ export default function Profile() {
       avatar_url: avatarUrl,
     });
 
-    await refreshUser(); // instantly update sidebar + page
+    await refreshUser();
     setSaving(false);
-    setIsEditing(false); // CLOSE MODAL AFTER SAVE
+    setIsEditing(false);
   };
 
   const handleLogout = async () => {
     await signOut();
-    navigate("/");   // go to Landing page
+    navigate("/");
   };
-  
 
   if (!user)
     return (
-      <div className="min-h-screen bg-[#0b0b0f] text-white flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center text-black dark:text-white bg-white dark:bg-[#0b0b0f]">
         Please log in.
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-[#0b0b0f] text-white flex">
+    <div
+      className="
+        min-h-screen flex 
+        bg-white dark:bg-[#0b0b0f] 
+        text-black dark:text-white 
+        relative transition
+      "
+    >
+      {/* 🔥 BACKGROUND GLOW */}
+      <div
+        className="
+          absolute inset-0 -z-10
+          opacity-[0.12] dark:opacity-[0.07]
+          bg-gradient-to-br from-purple-400 via-pink-300 to-blue-300
+          blur-[160px]
+        "
+      />
 
-      <main className="flex-1 p-8 ml-20 md:ml-56">
+      {/* MAIN CONTENT */}
+      <main className="flex-1 p-8 ml-20 md:ml-56 transition">
 
         {/* PROFILE HEADER */}
-        <div className="flex flex-col items-center mb-10">
+        <div className="flex flex-col items-center mb-14">
 
           {/* Avatar */}
-          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-purple-500 bg-[#0f0c17]">
+          <div
+            className="
+              w-32 h-32 rounded-full overflow-hidden
+              border-4 border-purple-500/70 dark:border-purple-400
+              shadow-xl dark:shadow-[0_0_25px_rgba(150,0,255,0.25)]
+            "
+          >
             {avatarPreview ? (
-              <img src={avatarPreview} className="w-full h-full object-cover" />
+              <img
+                src={avatarPreview}
+                className="w-full h-full object-cover"
+              />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-purple-400 text-5xl">
+              <div className="w-full h-full flex items-center justify-center text-purple-500 text-5xl">
                 👤
               </div>
             )}
           </div>
 
-          {/* Info */}
-          <div className="text-center mt-4">
-            <h2 className="text-3xl font-bold">
+          {/* User Info */}
+          <div className="text-center mt-6">
+            <h2 className="text-4xl font-extrabold capitalize">
               {user.user_metadata?.full_name || user.email.split("@")[0]}
             </h2>
 
-            <p className="text-gray-400">@{user.email.split("@")[0]}</p>
-            {user.user_metadata?.bio && (
-              <p className="mt-2 text-gray-400 max-w-md">{user.user_metadata.bio}</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">
+              @{user.email.split("@")[0]}
+            </p>
+
+            {bio && (
+              <p className="mt-3 text-gray-700 dark:text-gray-300 max-w-md mx-auto">
+                {bio}
+              </p>
             )}
 
-            {/* EDIT PROFILE BUTTON */}
+            {/* Edit Button */}
             <button
               onClick={() => setIsEditing(true)}
-              className="mt-5 px-5 py-2 bg-purple-600 rounded-lg hover:bg-purple-500 transition"
+              className="
+                mt-6 px-6 py-2 
+                bg-gradient-to-r from-purple-500 to-pink-500 
+                rounded-lg font-semibold text-white
+                hover:opacity-90 transition
+              "
             >
               Edit Profile
             </button>
           </div>
         </div>
 
-        {/* Placeholder for playlists */}
-        <div className="text-center text-gray-500 mt-20">
-          Your playlists UI goes here...
+        {/* Placeholder for future playlists */}
+        <div className="text-center text-gray-600 dark:text-gray-400 mt-20">
+          Your playlists UI will appear here soon...
         </div>
 
-        {/* LOGOUT AT BOTTOM */}
+        {/* Logout */}
         <div className="mt-20 flex justify-center">
           <button
             onClick={handleLogout}
-            className="px-8 py-3 bg-red-500 text-white rounded-lg hover:bg-red-400 transition"
+            className="
+              px-8 py-3 rounded-lg 
+              bg-red-500 text-white font-semibold
+              hover:bg-red-400 transition
+            "
           >
             Logout
           </button>
         </div>
       </main>
 
-      {/* MODAL FOR EDIT PROFILE */}
+      {/* 🔥 EDIT PROFILE MODAL */}
       {isEditing && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
-          <div className="bg-[#16121d] w-full max-w-md rounded-2xl p-6 border border-gray-800">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50">
+          <div
+            className="
+              w-full max-w-md 
+              bg-gray-100 dark:bg-[#16121d]
+              p-6 rounded-2xl 
+              border border-gray-300 dark:border-gray-700
+              shadow-xl
+            "
+          >
+            <h2 className="text-2xl font-bold text-center mb-4">
+              Edit Profile
+            </h2>
 
-            <h2 className="text-xl font-bold mb-4 text-center">Edit Profile</h2>
-
-            {/* Avatar Upload */}
-            <label className="w-28 h-28 rounded-full overflow-hidden border-2 border-purple-500 mx-auto block cursor-pointer">
-              <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+            {/* Avatar uploader */}
+            <label
+              className="
+                w-28 h-28 rounded-full overflow-hidden 
+                border-2 border-purple-500 
+                mx-auto block cursor-pointer shadow-lg
+              "
+            >
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
 
               {avatarPreview ? (
-                <img src={avatarPreview} className="w-full h-full object-cover" />
+                <img
+                  src={avatarPreview}
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <div className="w-full h-full flex justify-center items-center text-purple-400 text-3xl">
+                <div className="w-full h-full flex items-center justify-center text-purple-400 text-4xl">
                   👤
                 </div>
               )}
@@ -147,39 +205,63 @@ export default function Profile() {
             {/* Full Name */}
             <input
               type="text"
-              placeholder="Full name"
+              placeholder="Full Name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="mt-4 w-full bg-[#0e0e12] border border-gray-700 rounded-lg px-4 py-3 text-white"
+              className="
+                mt-5 w-full px-4 py-3 rounded-lg
+                bg-white dark:bg-[#0e0e12]
+                border border-gray-300 dark:border-gray-700
+                text-black dark:text-white
+                placeholder-gray-500 dark:placeholder-gray-500
+                focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400
+                outline-none
+              "
             />
 
             {/* Bio */}
             <textarea
               rows="3"
-              placeholder="Bio"
+              placeholder="Bio..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="mt-4 w-full bg-[#0e0e12] border border-gray-700 rounded-lg px-4 py-3 text-white resize-none"
+              className="
+                mt-4 w-full px-4 py-3 rounded-lg resize-none
+                bg-white dark:bg-[#0e0e12]
+                border border-gray-300 dark:border-gray-700
+                text-black dark:text-white
+                placeholder-gray-500 dark:placeholder-gray-500
+                focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400
+                outline-none
+              "
             />
 
             {/* Buttons */}
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-4 mt-6">
               <button
-                className="flex-1 py-2 bg-gray-700 rounded-lg hover:bg-gray-600"
+                className="
+                  flex-1 py-2 rounded-lg
+                  bg-gray-300 dark:bg-gray-700
+                  hover:bg-gray-200 dark:hover:bg-gray-600
+                "
                 onClick={() => setIsEditing(false)}
               >
                 Cancel
               </button>
 
               <button
-                className="flex-1 py-2 bg-purple-600 rounded-lg hover:bg-purple-500 font-semibold disabled:opacity-50"
+                className="
+                  flex-1 py-2 rounded-lg font-semibold text-white
+                  bg-gradient-to-r from-purple-500 to-pink-500
+                  hover:opacity-90 transition
+                  disabled:opacity-50
+                "
                 onClick={handleSave}
                 disabled={saving}
               >
                 {saving ? "Saving..." : "Save"}
               </button>
             </div>
-
           </div>
         </div>
       )}

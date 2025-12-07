@@ -1,85 +1,211 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Music2 } from "lucide-react";
 
-function Landing() {
+export default function Landing() {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen bg-[#0b0b0f] text-white flex flex-col items-center">
-      {/* Navbar */}
-      <nav className="w-full max-w-7xl flex items-center justify-between px-6 sm:px-10 py-6 text-gray-200">
-        {/* Logo */}
-        <div className="flex items-center space-x-2 text-2xl font-bold">
-          <span className="text-purple-400">🎵 Playlist</span>
-          <span className="text-pink-400">Palette</span>
-        </div>
+    <div
+      className="
+        relative 
+        min-h-screen 
+        w-full 
+        flex flex-col items-center 
+        bg-white dark:bg-[#0b0b0f]
+        text-black dark:text-white
+        transition-colors duration-300
+        overflow-hidden
+      "
+    >
 
-        {/* Nav Links */}
-        <div className="flex items-center space-x-8 text-gray-300">
-          <Link to="/explore" className="hover:text-white transition">
-            Browse
-          </Link>
-          <Link to="/home" className="hover:text-white transition">
-            Create
-          </Link>
-          <Link
-            to="/login"
-            className="bg-gradient-to-r from-purple-500 to-pink-500 px-5 py-2 rounded-full text-white font-semibold hover:opacity-90 transition"
-          >
-            Sign In
-          </Link>
-        </div>
-      </nav>
+      {/* 🔥 BACKGROUND GRADIENTS */}
+      <div
+        className="
+          absolute inset-0 
+          blur-3xl opacity-60 dark:opacity-40
+          bg-hero-light dark:bg-hero-dark
+          pointer-events-none
+        "
+      />
 
-      {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center flex-grow text-center px-6 w-full max-w-5xl mt-10">
-        <button className="mb-6 text-sm text-purple-300 border border-purple-400 px-4 py-1 rounded-full hover:bg-purple-500 hover:text-white transition">
-          🎵 Share Your Sound
-        </button>
+      <div
+        className="
+          absolute top-0 left-0 w-full h-[350px]
+          bg-gradient-to-b 
+          from-purple-500/30 via-pink-500/10 to-transparent
+          dark:from-purple-700/20 dark:via-pink-600/10 dark:to-transparent
+          blur-2xl
+        "
+      />
 
-        <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 leading-tight text-center">
+     {/* NAVBAR */}
+<div
+  className="
+    w-full 
+    flex justify-between items-center
+    px-12 py-6 
+    relative z-10
+
+    bg-white/70 dark:bg-[#0b0b0f]/50
+    backdrop-blur-md border-b 
+    border-gray-200 dark:border-gray-800
+
+    pl-20 md:pl-56   /* 🔥 AUTO ADJUST WITH SIDEBAR WIDTH */
+  "
+>
+  <div className="flex items-center gap-3">
+    <Music2 size={28} className="text-purple-600 dark:text-purple-400" />
+    <h1 className="text-2xl font-bold">Playlist Palette</h1>
+  </div>
+
+  <div className="flex items-center gap-6">
+    <button
+      onClick={() => navigate("/explore")}
+      className="text-gray-700 dark:text-gray-300 hover:text-purple-500 dark:hover:text-purple-400 transition"
+    >
+      Browse
+    </button>
+
+    <button
+      onClick={() => navigate("/create")}
+      className="text-gray-700 dark:text-gray-300 hover:text-purple-500 dark:hover:text-purple-400 transition"
+    >
+      Create
+    </button>
+
+    <button
+      onClick={() => navigate("/login")}
+      className="
+        px-6 py-2 rounded-full text-white
+        bg-gradient-to-r from-purple-500 to-pink-500
+        shadow-md hover:opacity-90 transition
+      "
+    >
+      Sign In
+    </button>
+  </div>
+</div>
+
+{/* HERO SECTION */}
+<div
+  className="
+    relative z-10 flex flex-col items-center 
+    mt-40 px-6 text-center
+    w-full max-w-[1000px]
+  "
+>
+
+        {/* GLOW BEHIND TITLE */}
+        <div
+          className="
+            absolute w-[500px] h-[200px]
+            bg-pink-500/20 dark:bg-purple-600/20
+            blur-3xl rounded-full -z-10
+          "
+        />
+
+        <h1 className="text-5xl md:text-7xl font-extrabold leading-tight drop-shadow-lg">
           Discover & Share{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-fuchsia-500">
+          <span
+            className="
+              bg-gradient-to-r from-purple-500 to-pink-500
+              bg-clip-text text-transparent
+            "
+          >
             Amazing Playlists
           </span>
         </h1>
 
-        <p className="text-gray-300 max-w-2xl text-lg mb-10">
-          Connect with music lovers worldwide. Create, share, and explore curated
-          playlists for every mood and moment.
+        <p
+          className="
+            mt-6 text-gray-700 dark:text-gray-300 
+            text-lg max-w-2xl leading-relaxed
+          "
+        >
+          Connect with music lovers worldwide. Create, share, and explore curated playlists
+          for every mood and moment.
         </p>
 
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link
-            to="/explore"
-            className="bg-gradient-to-r from-purple-500 to-pink-500 px-6 py-3 rounded-full text-white font-semibold text-lg hover:opacity-90 transition"
+        <div className="flex gap-5 justify-center mt-10">
+          <button
+            onClick={() => navigate("/explore")}
+            className="
+              px-7 py-3 rounded-full text-lg 
+              bg-gradient-to-r from-purple-500 to-pink-500 
+              text-white shadow-lg hover:opacity-90 transition
+            "
           >
             Start Exploring
-          </Link>
-          <Link
-            to="/home"
-            className="border border-gray-500 px-6 py-3 rounded-full text-lg font-semibold hover:bg-gray-800 transition"
+          </button>
+
+          <button
+            onClick={() => navigate("/create")}
+            className="
+              px-7 py-3 rounded-full text-lg
+              border border-gray-700 dark:border-gray-300
+              text-black dark:text-white
+              hover:bg-black hover:text-white
+              dark:hover:bg-white dark:hover:text-black
+              transition
+            "
           >
             Create Playlist
-          </Link>
+          </button>
         </div>
-      </section>
+      </div>
 
-      {/* Stats Section */}
-      <section className="bg-[#11111a] w-full py-12 flex flex-wrap justify-center gap-16 text-center border-t border-gray-800 mt-20">
-        <div>
-          <p className="text-3xl font-bold text-purple-400">50K+</p>
-          <p className="text-gray-400">Active Curators</p>
+      {/* STATS */}
+      <div
+        className="
+          relative z-10 w-full mt-auto py-14 
+          bg-white dark:bg-[#0c0a11]
+          shadow-inner border-t 
+          border-gray-200 dark:border-gray-800
+        "
+      >
+        <div className="max-w-4xl mx-auto grid grid-cols-3 text-center gap-10">
+          <div>
+            <h2
+              className="
+                text-3xl font-bold
+                bg-gradient-to-r from-purple-500 to-pink-500
+                bg-clip-text text-transparent
+              "
+            >
+              50K+
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">Active Curators</p>
+          </div>
+
+          <div>
+            <h2
+              className="
+                text-3xl font-bold
+                bg-gradient-to-r from-purple-500 to-pink-500
+                bg-clip-text text-transparent
+              "
+            >
+              100K+
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">Playlists Shared</p>
+          </div>
+
+          <div>
+            <h2
+              className="
+                text-3xl font-bold
+                bg-gradient-to-r from-purple-500 to-pink-500
+                bg-clip-text text-transparent
+              "
+            >
+              2M+
+            </h2>
+            <p className="text-gray-700 dark:text-gray-300">Songs Discovered</p>
+          </div>
         </div>
-        <div>
-          <p className="text-3xl font-bold text-pink-400">100K+</p>
-          <p className="text-gray-400">Playlists Shared</p>
-        </div>
-        <div>
-          <p className="text-3xl font-bold text-blue-400">2M+</p>
-          <p className="text-gray-400">Songs Discovered</p>
-        </div>
-      </section>
+      </div>
+
     </div>
   );
 }
-
-export default Landing;

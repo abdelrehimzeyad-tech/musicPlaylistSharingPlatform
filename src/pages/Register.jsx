@@ -37,7 +37,6 @@ export default function Register() {
     setLoading(true);
 
     try {
-      // Supabase sign up
       const { error: authError } = await signUp(form.email, form.password);
 
       if (authError) {
@@ -46,38 +45,68 @@ export default function Register() {
         return;
       }
 
-      // (Optional) later you can insert `form.name` into a profiles table
-
-      // After successful signup, go to login page
-      navigate("/login");
+      navigate("/login"); // success
     } catch (err) {
       console.error(err);
-      setError("Something went wrong. Please try again.");
+      setError("Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0b0b0f] flex items-center justify-center p-6">
-      <div className="bg-[#16121d] p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-800">
-        <h1 className="text-3xl font-bold text-center text-white mb-6">
-          Create an Account
+    <div
+      className="
+        min-h-screen flex items-center justify-center px-6
+        bg-white dark:bg-[#0b0b0f]
+        text-black dark:text-white
+        relative transition-colors duration-300
+      "
+    >
+      {/* 🔥 BACKGROUND GLOW */}
+      <div
+        className="
+          absolute inset-0 -z-10 
+          opacity-[0.12] dark:opacity-[0.07]
+          bg-gradient-to-br from-purple-400 via-pink-300 to-blue-300
+          blur-[160px]
+        "
+      />
+
+      {/* CARD */}
+      <div
+        className="
+          w-full max-w-md 
+          p-8 rounded-2xl 
+          bg-gray-100 dark:bg-[#16121d] 
+          border border-gray-300 dark:border-gray-700
+          shadow-xl backdrop-blur-md
+        "
+      >
+        <h1 className="text-4xl font-extrabold text-center mb-6">
+          Create Account
         </h1>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <p className="text-red-400 text-sm text-center mb-4">{error}</p>
+            <p className="text-red-500 text-sm text-center">{error}</p>
           )}
 
-          {/* Name */}
+          {/* Full Name */}
           <input
             type="text"
             name="name"
             placeholder="Full Name"
             value={form.name}
             onChange={handleChange}
-            className="w-full mb-4 p-3 rounded-lg bg-[#0f0c17] text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+            className="
+              w-full px-4 py-3 rounded-lg 
+              bg-white dark:bg-[#0e0e12] 
+              border border-gray-300 dark:border-gray-700
+              placeholder-gray-500 dark:placeholder-gray-400
+              focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400
+              outline-none transition
+            "
           />
 
           {/* Email */}
@@ -87,7 +116,14 @@ export default function Register() {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            className="w-full mb-4 p-3 rounded-lg bg-[#0f0c17] text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+            className="
+              w-full px-4 py-3 rounded-lg 
+              bg-white dark:bg-[#0e0e12] 
+              border border-gray-300 dark:border-gray-700
+              placeholder-gray-500 dark:placeholder-gray-400
+              focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400
+              outline-none transition
+            "
           />
 
           {/* Password */}
@@ -97,7 +133,14 @@ export default function Register() {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            className="w-full mb-4 p-3 rounded-lg bg-[#0f0c17] text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+            className="
+              w-full px-4 py-3 rounded-lg 
+              bg-white dark:bg-[#0e0e12] 
+              border border-gray-300 dark:border-gray-700
+              placeholder-gray-500 dark:placeholder-gray-400
+              focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400
+              outline-none transition
+            "
           />
 
           {/* Confirm Password */}
@@ -107,23 +150,38 @@ export default function Register() {
             placeholder="Confirm Password"
             value={form.confirm}
             onChange={handleChange}
-            className="w-full mb-6 p-3 rounded-lg bg-[#0f0c17] text-white border border-gray-700 focus:ring-2 focus:ring-purple-500 outline-none"
+            className="
+              w-full px-4 py-3 rounded-lg 
+              bg-white dark:bg-[#0e0e12] 
+              border border-gray-300 dark:border-gray-700
+              placeholder-gray-500 dark:placeholder-gray-400
+              focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400
+              outline-none transition
+            "
           />
 
-          {/* Register Button */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-lg text-white font-semibold hover:opacity-90 transition disabled:opacity-60"
+            className="
+              w-full py-3 mt-2 rounded-lg 
+              text-white font-semibold
+              bg-gradient-to-r from-purple-500 to-pink-500
+              hover:opacity-90 transition disabled:opacity-60
+            "
           >
-            {loading ? "Signing you up..." : "Sign Up"}
+            {loading ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
-        {/* Login link */}
-        <p className="text-center text-gray-400 mt-4">
+        {/* Link to login */}
+        <p className="text-center text-gray-600 dark:text-gray-400 mt-5">
           Already have an account?{" "}
-          <Link to="/login" className="text-pink-400 hover:underline">
+          <Link
+            to="/login"
+            className="text-pink-500 dark:text-pink-400 hover:underline"
+          >
             Log in
           </Link>
         </p>

@@ -1,4 +1,5 @@
-/* 🎵 General Page Styling */
+
+
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
@@ -12,7 +13,54 @@ body {
   min-height: 100vh;
 }
 
-/* 🔹 Navbar */
+
+
+.wave-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 0, 150, 0.25),
+    rgba(120, 50, 255, 0.15),
+    transparent 70%
+  );
+  animation: wavePulse 8s infinite alternate ease-in-out;
+}
+
+@keyframes wavePulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0.65;
+  }
+}
+
+.dark .wave-bg {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 0, 150, 0.15),
+    rgba(120, 50, 255, 0.10),
+    transparent 70%
+  );
+}
+
+
+
+.text-gradient {
+  background: linear-gradient(to right, #a855f7, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -65,41 +113,35 @@ body {
   opacity: 0.85;
 }
 
-/* 🔹 Hero Section */
+
+
 .hero {
   text-align: center;
   padding: 120px 20px 80px 20px;
   flex-grow: 1;
+  position: relative;
 }
 
-.tag {
-  background: transparent;
-  border: 1px solid #a855f7;
-  color: #a855f7;
-  border-radius: 9999px;
-  padding: 8px 22px;
-  font-size: 0.9rem;
-  margin-bottom: 25px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.tag:hover {
-  background-color: #a855f7;
-  color: white;
-}
 
 .hero h1 {
   font-size: 3.6rem;
   font-weight: 800;
   margin: 20px 0;
   letter-spacing: -1px;
+  position: relative;
 }
 
-.gradient-text {
-  background: linear-gradient(to right, #a855f7, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.hero h1::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255, 0, 150, 0.12), transparent 70%);
+  filter: blur(50px);
+  z-index: -1;
 }
 
 .hero p {
@@ -146,7 +188,8 @@ body {
   background-color: #1a1a1a;
 }
 
-/* 🔹 Stats Section */
+
+
 .stats {
   display: flex;
   justify-content: center;
@@ -183,15 +226,38 @@ body {
   color: #3b82f6;
 }
 
-/* ✨ Responsive Tweaks */
+
+
+.light body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.light .stats {
+  background-color: #f8f8fb !important;
+  border-top-color: #dcdce3 !important;
+}
+
+.light .secondary-btn {
+  color: #222 !important;
+  border-color: #bbb !important;
+}
+
+.light .hero p {
+  color: #555 !important;
+}
+
+
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     gap: 10px;
+    padding: 20px;
   }
 
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: 2.4rem;
   }
 
   .hero-buttons {
